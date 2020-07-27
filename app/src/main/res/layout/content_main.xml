@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".MainActivity"
+    tools:showIn="@layout/activity_main">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/statement_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/tvStatementTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Statement"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:padding="10dp"
+                android:background="@color/colorAccentDark"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="150dp"
+                >
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/statementList"
+                    android:padding="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorAccentLight"
+                    />
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/tvMonthlyTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Monthly"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:padding="10dp"
+                android:background="@color/colorAccentDark"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:background="@color/colorAccentLight"
+                >
+                <TextView
+                    android:id="@+id/monthly_profit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="18dp"
+                    android:textStyle="bold"
+                    android:text="Profit: 0.0"
+                    />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvWeeklyTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Weekly"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:padding="10dp"
+                android:background="@color/colorAccentDark"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:background="@color/colorAccentLight"
+                >
+                <TextView
+                    android:id="@+id/weekly_profit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="18dp"
+                    android:textStyle="bold"
+                    android:text="Profit: 0.0"
+                    />
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

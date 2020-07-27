@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <LinearLayout
+        android:id="@+id/each_statement_body"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:weightSum="5"
+        >
+    <TextView
+        android:id="@+id/each_statement_date"
+        style="@style/cellItem"
+        android:layout_weight="1"
+        />
+    <TextView
+        android:id="@+id/each_statement_current_networth"
+        style="@style/cellItem"
+        android:layout_weight="1"
+        />
+    <TextView
+        android:id="@+id/each_statement_days_gain"
+        style="@style/cellItem"
+        android:layout_weight="1"
+        />
+    <TextView
+        android:id="@+id/each_statement_days_inevestment"
+        style="@style/cellItem"
+        android:layout_weight="1"
+        />
+    <TextView
+        android:id="@+id/each_statement_days_unrelised_gain"
+        style="@style/cellItem"
+        android:layout_weight="1"
+        />
+    </LinearLayout>
+    <ImageView
+        android:id="@+id/delete_statement"
+        android:layout_width="20dp"
+        android:layout_height="match_parent"
+        android:src="@android:drawable/ic_notification_clear_all" />
+
+</LinearLayout>

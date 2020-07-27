@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Portfolio Management</string>
+    <string name="action_backup">Backup</string>
+    <string name="action_restore">Restore</string>
+    <string name="action_password">Passwords</string>
+
+</resources>
