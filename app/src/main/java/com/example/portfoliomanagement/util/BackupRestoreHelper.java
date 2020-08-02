@@ -40,24 +40,25 @@ public class BackupRestoreHelper {
     public static class CreateBackup extends AsyncTask<Void, Void, Void> {
         List<Object> objects;
         private Context context;
-        private final String TAG="BackupRestoreHelper";
+        private final String TAG = "BackupRestoreHelper";
         private InvestmentStatementService investmentStatementService;
         private PasswordService passwordService;
         List<InvestmentStatement> investmentStatements;
         List<PasswordRecord> passwordRecords;
+
         public CreateBackup(Context context) {
-            this.objects=new ArrayList<>();
-            this.context=context;
+            this.objects = new ArrayList<>();
+            this.context = context;
 
 
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            investmentStatementService=new InvestmentStatementService(context);
-            passwordService=new PasswordService(context);
-            investmentStatements=investmentStatementService.investmentStatementDao.getAllDateASC();
-            passwordRecords=passwordService.passwordRecordDao.getAll();
+            investmentStatementService = new InvestmentStatementService(context);
+            passwordService = new PasswordService(context);
+            investmentStatements = investmentStatementService.investmentStatementDao.getAllDateASC();
+            passwordRecords = passwordService.passwordRecordDao.getAll();
             objects.addAll(investmentStatements);
             objects.addAll(passwordRecords);
             return null;
@@ -67,32 +68,32 @@ public class BackupRestoreHelper {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             try {
-                String filename=context.getExternalFilesDir(null).getAbsolutePath().concat("/").concat(getFileName());
-                if(!objects.isEmpty()){
+                String filename = context.getExternalFilesDir(null).getAbsolutePath().concat("/").concat(getFileName());
+                if (!objects.isEmpty()) {
                     //investment statements backup
-                    File file=new File(filename);
+                    File file = new File(filename);
                     file.createNewFile();
                     FileOutputStream fOut = new FileOutputStream(file);
-                    int count=0;
-                    for(Object o:objects){
-                        String record="";
-                        if(o instanceof InvestmentStatement){
+                    int count = 0;
+                    for (Object o : objects) {
+                        String record = "";
+                        if (o instanceof InvestmentStatement) {
                             fOut.write("\n".getBytes());
-                            InvestmentStatement investmentStatement=(InvestmentStatement)o;
-                            record=investmentStatement.getBackupRecord();
+                            InvestmentStatement investmentStatement = (InvestmentStatement) o;
+                            record = investmentStatement.getBackupRecord();
                         }
-                        if(o instanceof PasswordRecord){
+                        if (o instanceof PasswordRecord) {
                             fOut.write("\n".getBytes());
-                            PasswordRecord passwordRecord=(PasswordRecord) o;
-                            record=passwordRecord.getBackupRecord();
+                            PasswordRecord passwordRecord = (PasswordRecord) o;
+                            record = passwordRecord.getBackupRecord();
                         }
 
                         fOut.write(record.getBytes());
-                        Log.d(TAG,"Backup Processing - "+(count+1)+"/"+objects.size());
+                        Log.d(TAG, "Backup Processing - " + (count + 1) + "/" + objects.size());
                         count++;
                     }
                     fOut.close();
-                    Log.d(TAG,"Backup completed: @"+filename);
+                    Log.d(TAG, "Backup completed: @" + filename);
                     Toast.makeText(context, "Backup completed successfully!! ", Toast.LENGTH_SHORT).show();
 
                 }
@@ -111,33 +112,34 @@ public class BackupRestoreHelper {
     public static class startRestore extends AsyncTask<Void, Void, Void> {
         List<Object> objects;
         private Context context;
-        private final String TAG="BackupRestoreHelper";
+        private final String TAG = "BackupRestoreHelper";
         private Uri restoreFilePath;
         private InvestmentStatementService investmentStatementService;
         private PasswordService passwordService;
+
         public startRestore(Context context, Uri restoreFilePath) {
-            this.objects=new ArrayList<>();
-            this.context=context;
-            this.restoreFilePath=restoreFilePath;
-            investmentStatementService=new InvestmentStatementService(context);
-            passwordService=new PasswordService(context);
+            this.objects = new ArrayList<>();
+            this.context = context;
+            this.restoreFilePath = restoreFilePath;
+            investmentStatementService = new InvestmentStatementService(context);
+            passwordService = new PasswordService(context);
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            List<InvestmentStatement> investmentStatements=new LinkedList<>();
-            List<PasswordRecord> passwordRecords=new LinkedList<>();
+            List<InvestmentStatement> investmentStatements = new LinkedList<>();
+            List<PasswordRecord> passwordRecords = new LinkedList<>();
             try {
-                InputStream is=context.getContentResolver().openInputStream(restoreFilePath);
+                InputStream is = context.getContentResolver().openInputStream(restoreFilePath);
                 String line;
                 InputStreamReader isReader = new InputStreamReader(is);
                 BufferedReader reader = new BufferedReader(isReader);
                 while ((line = reader.readLine()) != null) {
-                    if(InvestmentStatement.isInstanceOf(line)){
+                    if (InvestmentStatement.isInstanceOf(line)) {
                         //invesmet_statement_record
-                        investmentStatements.add( InvestmentStatement.fromString(line));
+                        investmentStatements.add(InvestmentStatement.fromString(line));
                     }
-                    if(PasswordRecord.isInstanceOf(line)){
+                    if (PasswordRecord.isInstanceOf(line)) {
                         //password_record
                         passwordRecords.add(PasswordRecord.fromString(line));
                     }
@@ -154,10 +156,8 @@ public class BackupRestoreHelper {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            MainActivity mainActivity=(MainActivity)context;
-            if(mainActivity!=null && mainActivity.statementRecyclerView!=null && mainActivity.monthlyProfit!=null){
-                investmentStatementService.getAllInvestmentsDESC(mainActivity.statementRecyclerView,mainActivity.monthlyProfit);
-            }
+//            MainActivity mainActivity=(MainActivity)context;
+            investmentStatementService.getAllInvestments();
             Toast.makeText(context, "Restore completed successfully!! ", Toast.LENGTH_SHORT).show();
 
 
@@ -165,10 +165,9 @@ public class BackupRestoreHelper {
     }
 
 
-    public static String getFileName(){
-       return String.valueOf(new Date().getTime()).concat("_").concat("backup.bck");
+    public static String getFileName() {
+        return String.valueOf(new Date().getTime()).concat("_").concat("backup.bck");
     }
-
 
 
 }

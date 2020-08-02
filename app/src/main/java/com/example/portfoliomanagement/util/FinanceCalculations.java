@@ -5,46 +5,30 @@ import android.text.format.DateFormat;
 
 import com.example.portfoliomanagement.model.InvestmentStatement;
 
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class FinanceCalculations {
-
-    public static double monthlyProfit(List<InvestmentStatement> statements){
-        if(statements.isEmpty())
+    public static double monthlyProfit(List<InvestmentStatement> investmentStatements){
+        if(!investmentStatements.isEmpty())
+            return investmentStatements.get(0).getUnreliesedGains()
+                    - investmentStatements.get(investmentStatements.size()-1).getUnreliesedGains()
+                    - investmentStatements.get(investmentStatements.size()-1).getTodaysGain();
+        else
             return 0;
-        InvestmentStatement lastStatement=statements.get(0);
-        Date date=lastStatement.getInvestmentDate();
-        String day          = (String) DateFormat.format("dd",   date); // 20
-        String monthString  = (String) DateFormat.format("MMM",  date); // Jun
-        final String monthNumber  = (String) DateFormat.format("MM",   date); // 06
-        final String year         = (String) DateFormat.format("yyyy", date); // 2013
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Optional<InvestmentStatement> statementFirstOftheMonth= statements.stream().filter((statement)->((String)
-                    DateFormat.format("MM",
-                            statement.getInvestmentDate())).equals(monthNumber)
-                    && ((String) DateFormat.format("yyyy",
-                    statement.getInvestmentDate())).equals(year)
+    }
 
-            ).sorted(new Comparator<InvestmentStatement>() {
-                @Override
-                public int compare(InvestmentStatement o1, InvestmentStatement o2) {
-                    return o1.getInvestmentDate().after(o2.getInvestmentDate())?0:-1;
-                }
-            }).findFirst();
-            if(statementFirstOftheMonth.isPresent()){
-               double monthStartUGains= statementFirstOftheMonth.get().getUnreliesedGains();
-               double TGains=statementFirstOftheMonth.get().getTodaysGain();
-               double gainsBeforeToday=monthStartUGains-TGains;
-               double monthTillDateGain = lastStatement.getUnreliesedGains();
-               return monthTillDateGain-gainsBeforeToday;
-            }
-        }
-        return 0;
+    public static double netWorthGain(List<InvestmentStatement> investmentStatements){
+        if(!investmentStatements.isEmpty())
+            return investmentStatements.get(0).getCurrentNetWorth() - investmentStatements.get(investmentStatements.size()-1).getCurrentNetWorth();
+        else
+            return 0;
+    }
+    public static double monthlyInvestment(List<InvestmentStatement> investmentStatements) {
+        if(!investmentStatements.isEmpty())
+        return  investmentStatements.get(0).getInvestmentTillDate() - investmentStatements.get(investmentStatements.size()-1).getInvestmentTillDate();
+        else
+            return 0;
+
     }
 
     public static InvestmentStatement getNewInvestmentStatement(

@@ -118,29 +118,31 @@ public class InvestmentStatement {
         this.investmentTillDate = investmentTillDate;
     }
 
-    public InvestmentStatement clone(){
-        return new InvestmentStatement(this.investmentDate,this.currentNetWorth,this.todaysGain,this.todayInvestment,this.unreliesedGains,this.reliesedGains,this.investmentTillDate);
+    public InvestmentStatement clone() {
+        return new InvestmentStatement(this.investmentDate, this.currentNetWorth, this.todaysGain, this.todayInvestment, this.unreliesedGains, this.reliesedGains, this.investmentTillDate);
     }
 
-    public static boolean isInstanceOf(String investmentRecordString){
+    public static boolean isInstanceOf(String investmentRecordString) {
         return InvestmentStatement.class.getName().equals(investmentRecordString.split(",")[0]);
     }
-    public static InvestmentStatement fromString(String investmentRecordString){
-        String[] investmentRecordStringArr=investmentRecordString.split(",");
-        int id=Integer.parseInt(investmentRecordStringArr[1]);
-        Date iDate= Utils.getDateFromString(investmentRecordStringArr[2]);
-        double cNWorth=Double.parseDouble(investmentRecordStringArr[3]);
-        double tGain=Double.parseDouble(investmentRecordStringArr[4]);
-        double tInv=Double.parseDouble(investmentRecordStringArr[5]);
-        double uGain=Double.parseDouble(investmentRecordStringArr[6]);
-        double rGain=Double.parseDouble(investmentRecordStringArr[7]);
-        double iTillDate=Double.parseDouble(investmentRecordStringArr[8]);
 
-        InvestmentStatement investmentStatement=new InvestmentStatement(iDate,cNWorth,tGain,tInv,uGain,rGain,iTillDate);
+    public static InvestmentStatement fromString(String investmentRecordString) {
+        String[] investmentRecordStringArr = investmentRecordString.split(",");
+        int id = Integer.parseInt(investmentRecordStringArr[1]);
+        Date iDate = Utils.getDateFromString(investmentRecordStringArr[2]);
+        double cNWorth = Double.parseDouble(investmentRecordStringArr[3]);
+        double tGain = Double.parseDouble(investmentRecordStringArr[4]);
+        double tInv = Double.parseDouble(investmentRecordStringArr[5]);
+        double uGain = Double.parseDouble(investmentRecordStringArr[6]);
+        double rGain = Double.parseDouble(investmentRecordStringArr[7]);
+        double iTillDate = Double.parseDouble(investmentRecordStringArr[8]);
+
+        InvestmentStatement investmentStatement = new InvestmentStatement(iDate, cNWorth, tGain, tInv, uGain, rGain, iTillDate);
         investmentStatement.setId(id);
         return investmentStatement;
     }
-    public String getBackupRecord(){
+
+    public String getBackupRecord() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             return String.join(",",
                     this.getClass().getName(),
@@ -152,7 +154,7 @@ public class InvestmentStatement {
                     String.valueOf(this.unreliesedGains),
                     String.valueOf(this.reliesedGains),
                     String.valueOf(this.investmentTillDate)
-                    );
+            );
         }
         return null;
     }

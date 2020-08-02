@@ -62,27 +62,29 @@ public class PasswordRecord {
         this.password = password;
     }
 
-    public static boolean isInstanceOf(String passwordRecordString){
+    public static boolean isInstanceOf(String passwordRecordString) {
         return PasswordRecord.class.getName().equals(passwordRecordString.split(",")[0]);
     }
-    public static PasswordRecord fromString(String passwordRecordString){
-        String[] passwordRecordStrArr=passwordRecordString.split(",");
-        int id= Integer.parseInt(passwordRecordStrArr[1]);
-        String application=passwordRecordStrArr[2];
-        String passwordType=passwordRecordStrArr[3];
-        String password=passwordRecordStrArr[4];
-        return new PasswordRecord(id,application,passwordType,password);
+
+    public static PasswordRecord fromString(String passwordRecordString) {
+        String[] passwordRecordStrArr = passwordRecordString.split(",");
+        int id = Integer.parseInt(passwordRecordStrArr[1]);
+        String application = passwordRecordStrArr[2];
+        String passwordType = passwordRecordStrArr[3];
+        String password = passwordRecordStrArr[4];
+        return new PasswordRecord(id, application, passwordType, password);
     }
-    public String getBackupRecord(){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                return String.join(",",
-                        this.getClass().getName(),
-                        String.valueOf(this.id),
-                        this.Application,
-                        this.PasswordType,
-                        this.password
-                );
-            }
-            return null;
+
+    public String getBackupRecord() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return String.join(",",
+                    this.getClass().getName(),
+                    String.valueOf(this.id),
+                    this.Application,
+                    this.PasswordType,
+                    this.password
+            );
+        }
+        return null;
     }
 }

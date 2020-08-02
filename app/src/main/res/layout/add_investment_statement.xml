@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
 
     android:padding="20dp">
 
@@ -19,49 +20,47 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="numberSigned|numberDecimal"
         android:hint="Current NetWorth"
-        />
+        android:inputType="numberSigned|numberDecimal" />
+
     <EditText
         android:id="@+id/todaysGain"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="numberSigned|numberDecimal"
         android:hint="Today's Gain"
-        />
+        android:inputType="numberSigned|numberDecimal" />
+
     <EditText
         android:id="@+id/unreliesedGain"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="numberSigned|numberDecimal"
         android:hint="Unreliesed Gain"
-        />
+        android:inputType="numberSigned|numberDecimal" />
+
     <EditText
         android:id="@+id/investment_till_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="numberSigned|numberDecimal"
         android:hint="Investment Till Date"
-        />
+        android:inputType="numberSigned|numberDecimal" />
 
     <EditText
         android:id="@+id/statementDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="date"
         android:hint="Statement Date"
-        />
+        android:inputType="date" />
 
 
     <CalendarView
         android:id="@+id/datePicker"
-        android:visibility="visible"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:visibility="visible" />
 
 
 </LinearLayout>

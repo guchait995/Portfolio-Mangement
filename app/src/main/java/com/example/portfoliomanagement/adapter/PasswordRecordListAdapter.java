@@ -23,30 +23,31 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class PasswordRecordListAdapter extends  RecyclerView.Adapter<PasswordRecordListAdapter.PasswordRecordViewHolder>{
+public class PasswordRecordListAdapter extends RecyclerView.Adapter<PasswordRecordListAdapter.PasswordRecordViewHolder> {
 
     private List<PasswordRecord> passwordRecords;
     private Context context;
-    public PasswordRecordListAdapter(List<PasswordRecord> passwordRecords, Context context){
-        List<PasswordRecord> passwordRecordsTemp=new LinkedList<>();
+
+    public PasswordRecordListAdapter(List<PasswordRecord> passwordRecords, Context context) {
+        List<PasswordRecord> passwordRecordsTemp = new LinkedList<>();
         passwordRecordsTemp.add(new PasswordRecord());
         passwordRecordsTemp.addAll(passwordRecords);
-        this.passwordRecords=passwordRecordsTemp;
-        this.context=context;
+        this.passwordRecords = passwordRecordsTemp;
+        this.context = context;
     }
 
 
     @NonNull
     @Override
     public PasswordRecordViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v=LayoutInflater.from(context).inflate(R.layout.each_password_record,parent,false);
-        PasswordRecordViewHolder passwordRecordViewHolder=new PasswordRecordViewHolder(v);
+        View v = LayoutInflater.from(context).inflate(R.layout.each_password_record, parent, false);
+        PasswordRecordViewHolder passwordRecordViewHolder = new PasswordRecordViewHolder(v);
         return passwordRecordViewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull PasswordRecordViewHolder holder, int position) {
-        if(passwordRecords.get(position).getApplication()==null){
+        if (passwordRecords.get(position).getApplication() == null) {
             holder.tvApplication.setText("Application");
             holder.tvApplication.setTypeface(null, Typeface.BOLD);
             holder.tvPasswordType.setText("UserId");
@@ -56,8 +57,8 @@ public class PasswordRecordListAdapter extends  RecyclerView.Adapter<PasswordRec
             holder.deleteButton.setVisibility(View.INVISIBLE);
             holder.deleteButton.setEnabled(false);
 
-        }else{
-            PasswordRecord passwordRecord=passwordRecords.get(position);
+        } else {
+            PasswordRecord passwordRecord = passwordRecords.get(position);
             holder.tvApplication.setText(passwordRecord.getApplication());
             holder.tvPasswordType.setText(passwordRecord.getPasswordType());
             holder.tvPassword.setText(passwordRecord.getPassword());
@@ -67,13 +68,13 @@ public class PasswordRecordListAdapter extends  RecyclerView.Adapter<PasswordRec
             holder.deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Utils.isConfirmedToDelete(context,passwordRecord);
+                    Utils.isConfirmedToDelete(context, passwordRecord);
                 }
             });
             holder.eachPasswordRecordBody.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ((PasswordListActivity)context).editPasswordRecord(passwordRecord);
+                    ((PasswordListActivity) context).editPasswordRecord(passwordRecord);
                 }
             });
         }
@@ -84,19 +85,20 @@ public class PasswordRecordListAdapter extends  RecyclerView.Adapter<PasswordRec
         return passwordRecords.size();
     }
 
-    public static class PasswordRecordViewHolder extends RecyclerView.ViewHolder{
+    public static class PasswordRecordViewHolder extends RecyclerView.ViewHolder {
         TextView tvApplication;
         TextView tvPasswordType;
         TextView tvPassword;
         ImageView deleteButton;
         LinearLayout eachPasswordRecordBody;
+
         public PasswordRecordViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvApplication=itemView.findViewById(R.id.password_record_application);
-            tvPasswordType=itemView.findViewById(R.id.password_record_type);
-            tvPassword=itemView.findViewById(R.id.password_record_password);
-            deleteButton=itemView.findViewById(R.id.delete_password_record);
-            eachPasswordRecordBody=itemView.findViewById(R.id.each_password_record_body);
+            tvApplication = itemView.findViewById(R.id.password_record_application);
+            tvPasswordType = itemView.findViewById(R.id.password_record_type);
+            tvPassword = itemView.findViewById(R.id.password_record_password);
+            deleteButton = itemView.findViewById(R.id.delete_password_record);
+            eachPasswordRecordBody = itemView.findViewById(R.id.each_password_record_body);
         }
     }
 }

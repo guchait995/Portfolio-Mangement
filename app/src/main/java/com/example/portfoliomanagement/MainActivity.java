@@ -12,6 +12,7 @@ import com.example.portfoliomanagement.model.InvestmentStatement;
 import com.example.portfoliomanagement.service.DBService;
 import com.example.portfoliomanagement.service.InvestmentStatementService;
 import com.example.portfoliomanagement.util.BackupRestoreHelper;
+import com.example.portfoliomanagement.util.FinanceCalculations;
 import com.example.portfoliomanagement.util.Utils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -30,9 +31,12 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,11 +53,15 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private List<InvestmentStatement> investmentStatements;
-    private Map<Date,InvestmentStatement> dateInvestmentStatementMap;
+    private Map<Date, InvestmentStatement> dateInvestmentStatementMap;
     InvestmentStatement lastStatement;
     InvestmentStatementService investmentStatementService;
     public RecyclerView statementRecyclerView;
     public TextView monthlyProfit;
+    private Spinner monthSpinner;
+    private Spinner yearSpinner;
+    private int currentMonth;
+    private int currentYear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,41 +70,116 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DBService.init(this);
-        investmentStatements=new LinkedList<>();
-        statementRecyclerView=findViewById(R.id.statementList);
-        monthlyProfit=findViewById(R.id.monthly_profit);
-        investmentStatementService=new InvestmentStatementService(this);
-        if(!investmentStatements.isEmpty()){
-            lastStatement=investmentStatements.get(investmentStatements.size()-1);
+        investmentStatements = new LinkedList<>();
+        statementRecyclerView = findViewById(R.id.statementList);
+        monthlyProfit = findViewById(R.id.monthly_profit);
+        monthSpinner = findViewById(R.id.monthSpinner);
+        yearSpinner = findViewById(R.id.yearSpinner);
+        initSpinners();
+        investmentStatementService = new InvestmentStatementService(this);
+        if (!investmentStatements.isEmpty()) {
+            lastStatement = investmentStatements.get(investmentStatements.size() - 1);
         }
-        if(!Utils.checkPermissions(this)){
+        if (!Utils.checkPermissions(this)) {
             Toast.makeText(this, "Permissions Not Granted", Toast.LENGTH_SHORT).show();
         }
-        dateInvestmentStatementMap=Utils.investmentStatementDateListToMap(investmentStatements);
+        dateInvestmentStatementMap = Utils.investmentStatementDateListToMap(investmentStatements);
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            addInvestmentStatement(view,null);
+                addInvestmentStatement(view, null);
             }
         });
         statementRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-       refreshInvestments();
+        refreshInvestments();
 
     }
 
-    public void refreshInvestments(){
-        investmentStatements=investmentStatementService.getAllInvestmentsDESC(statementRecyclerView,monthlyProfit);
-//        investmentStatementService.getAllInvestmentsASC(statementRecyclerView,monthlyProfit);
+
+    private void initSpinners() {
+        ArrayAdapter<CharSequence> monthSpinnerAdapter = ArrayAdapter.createFromResource(this,
+                R.array.monthItems,
+                R.layout.each_spinner_item
+        );
+        monthSpinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown);
+        monthSpinner.setAdapter(monthSpinnerAdapter);
+        ArrayAdapter<CharSequence> yearSpinnerAdapter = ArrayAdapter.createFromResource(this,
+                R.array.yearItems,
+                R.layout.each_spinner_item
+        );
+        yearSpinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown);
+        yearSpinner.setAdapter(yearSpinnerAdapter);
+        currentMonth = Utils.getTodaysDate().get(Calendar.MONTH);
+        currentYear = Utils.positionInYearArray(this,
+                Utils.getTodaysDate().get(Calendar.YEAR)
+        );
+        monthSpinner.setSelection(currentMonth);
+        yearSpinner.setSelection(currentYear);
+        monthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                yearMonthSpinnerSelected();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        yearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                yearMonthSpinnerSelected();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
-    public void deleteInvestment(InvestmentStatement investmentStatement){
+    private void yearMonthSpinnerSelected() {
+        String currentYear = yearSpinner.getSelectedItem().toString();
+        int currentYearPosition = yearSpinner.getSelectedItemPosition();
+        String currentMonth = monthSpinner.getSelectedItem().toString();
+        int currentMonthPosition = monthSpinner.getSelectedItemPosition();
+        Date startDate = Utils.getStartDateOfTheMonth(Integer.parseInt(currentYear), currentMonthPosition);
+        Date endDate = Utils.getEndDateOfTheMonth(Integer.parseInt(currentYear), currentMonthPosition);
+        investmentStatements = investmentStatementService
+                .getInvestmentStatmentsWithinDates(startDate.getTime(), endDate.getTime());
+        this.currentYear = Integer.parseInt(currentYear);
+        this.currentMonth = currentMonthPosition;
+
+    }
+
+    public void refreshInvestments() {
+        investmentStatements = investmentStatementService
+                .getInvestmentStatmentsWithinDates(
+                        Utils.getStartDateOfTheMonth(currentYear, currentMonth).getTime(),
+                        Utils.getEndDateOfTheMonth(currentYear, currentMonth).getTime()
+                );
+    }
+
+    public void refreshData(List<InvestmentStatement> investmentStatements) {
+        this.investmentStatements = investmentStatements;
+        StatementListAdapter sla = new StatementListAdapter(this, investmentStatements);
+        statementRecyclerView.setAdapter(sla);
+        monthlyProfit.setText(
+                "Profit: " + String.valueOf(FinanceCalculations.monthlyProfit(investmentStatements)) +
+                        "\nInvestment: " + String.valueOf(FinanceCalculations.monthlyInvestment(investmentStatements)) +
+                        "\nNetworth Gain: " + String.valueOf(FinanceCalculations.netWorthGain(investmentStatements))
+        );
+    }
+
+    public void deleteInvestment(InvestmentStatement investmentStatement) {
         investmentStatementService.deleteStatement(investmentStatement);
     }
 
-    private void addInvestmentStatement(View v,InvestmentStatement investmentStatement){
+    private void addInvestmentStatement(View v, InvestmentStatement investmentStatement) {
 
-        AlertDialog.Builder builder=new AlertDialog.Builder(v.getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
 //        builder.setTitle("Add Invest Statement");
         final View customLayout = getLayoutInflater().inflate(R.layout.add_investment_statement, null);
         builder.setView(customLayout);
@@ -106,16 +189,16 @@ public class MainActivity extends AppCompatActivity {
         final EditText etDate = customLayout.findViewById(R.id.statementDate);
         final EditText etInvestmentTillDate = customLayout.findViewById(R.id.investment_till_date);
         final EditText etUnreliesedGain = customLayout.findViewById(R.id.unreliesedGain);
-        final CalendarView calendarView= customLayout.findViewById(R.id.datePicker);
+        final CalendarView calendarView = customLayout.findViewById(R.id.datePicker);
         autoInvestmentStatementCreation(
-                etTodaysInvestment,etTotalValue,
-                etTodaysGain,etDate,
-                etInvestmentTillDate,etUnreliesedGain,
+                etTodaysInvestment, etTotalValue,
+                etTodaysGain, etDate,
+                etInvestmentTillDate, etUnreliesedGain,
                 calendarView);
 
         etDate.setEnabled(false);
-        etDate.setText(Utils.getTodaysDate());
-        if(investmentStatement!=null){
+        etDate.setText(Utils.getTodaysDateString());
+        if (investmentStatement != null) {
             etTodaysInvestment.setText(String.valueOf(investmentStatement.getTodayInvestment()));
             etTotalValue.setText(String.valueOf(investmentStatement.getCurrentNetWorth()));
             etTodaysGain.setText(String.valueOf(investmentStatement.getTodaysGain()));
@@ -123,28 +206,27 @@ public class MainActivity extends AppCompatActivity {
             etInvestmentTillDate.setText(String.valueOf(investmentStatement.getInvestmentTillDate()));
             etUnreliesedGain.setText(String.valueOf(investmentStatement.getUnreliesedGains()));
             calendarView.setDate(investmentStatement.getInvestmentDate().getTime());
-        }else{
-            investmentStatement= new InvestmentStatement();
+        } else {
+            investmentStatement = new InvestmentStatement();
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
                 @Override
                 public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                    etDate.setText(Utils.dateToString(year,month,dayOfMonth));
+                    etDate.setText(Utils.dateToString(year, month, dayOfMonth));
                 }
             });
         }
-        final InvestmentStatement investmentStatementTemp=investmentStatement;
+        final InvestmentStatement investmentStatementTemp = investmentStatement;
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Date statementDate= Utils.stringToDate(etDate.getText().toString(),Utils.getAppDateFormat());
-                Double todaysInvestment=Double.parseDouble(etTodaysInvestment.getText().toString());
-                Double currentNetWorth=Double.parseDouble(etTotalValue.getText().toString());
-                Double todaysGain=Double.parseDouble(etTodaysGain.getText().toString());
-                Double investmentTillDate=Double.parseDouble(etInvestmentTillDate.getText().toString());
-                Double unreliesedGain=Double.parseDouble(etUnreliesedGain.getText().toString());
-
+                Date statementDate = Utils.stringToDate(etDate.getText().toString(), Utils.getAppDateFormat());
+                Double todaysInvestment = Double.parseDouble(etTodaysInvestment.getText().toString());
+                Double currentNetWorth = Double.parseDouble(etTotalValue.getText().toString());
+                Double todaysGain = Double.parseDouble(etTodaysGain.getText().toString());
+                Double investmentTillDate = Double.parseDouble(etInvestmentTillDate.getText().toString());
+                Double unreliesedGain = Double.parseDouble(etUnreliesedGain.getText().toString());
 
 
                 investmentStatementTemp.setCurrentNetWorth(currentNetWorth);
@@ -156,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
                 investmentStatementTemp.setReliesedGains(0);
 
                 InvestmentStatement statementToAdd =
-                        Utils.createInvestmentStatment(lastStatement,investmentStatementTemp);
+                        Utils.createInvestmentStatment(lastStatement, investmentStatementTemp);
 
                 investmentStatementService.addInvestment(statementToAdd);
                 refreshInvestments();
@@ -166,8 +248,9 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-    public void editInvestmentStatement(View v,InvestmentStatement investmentStatement){
-        addInvestmentStatement(v,investmentStatement);
+
+    public void editInvestmentStatement(View v, InvestmentStatement investmentStatement) {
+        addInvestmentStatement(v, investmentStatement);
     }
 
     public void autoInvestmentStatementCreation(
@@ -178,11 +261,11 @@ public class MainActivity extends AppCompatActivity {
             EditText etInvestmentTillDate,
             EditText etUnreliesedGain,
             CalendarView calendarView
-            ){
+    ) {
 
-        if(investmentStatements.size()>0){
-            lastStatement=investmentStatements.get(investmentStatements.size()-1);
-            InvestmentStatement newInvestmentStatement=lastStatement.clone();
+        if (investmentStatements.size() > 0) {
+            lastStatement = investmentStatements.get(investmentStatements.size() - 1);
+            InvestmentStatement newInvestmentStatement = lastStatement.clone();
             etTodaysInvestment.setText(String.valueOf(0));
             etTodaysGain.setText(String.valueOf(0));
             etTodaysInvestment.addTextChangedListener(new TextWatcher() {
@@ -198,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    if(s.length()>0 && Utils.isDouble(s.toString())) {
+                    if (s.length() > 0 && Utils.isDouble(s.toString())) {
                         double todaysInvestment = Double.valueOf(s.toString());
                         newInvestmentStatement.setTodayInvestment(todaysInvestment);
                         newInvestmentStatement.setInvestmentTillDate(investmentStatements.get(0).getInvestmentTillDate() +
@@ -221,7 +304,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    if(s.length()>0 && Utils.isDouble(s.toString())) {
+                    if (s.length() > 0 && Utils.isDouble(s.toString())) {
                         double todaysGain = Double.valueOf(s.toString());
                         newInvestmentStatement.setTodaysGain(todaysGain);
                         newInvestmentStatement.setUnreliesedGains(investmentStatements.get(0).getUnreliesedGains() +
@@ -234,6 +317,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -251,6 +335,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -271,7 +356,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         if (id == R.id.action_password) {
-            Intent intent = new Intent(this,PasswordListActivity.class);
+            Intent intent = new Intent(this, PasswordListActivity.class);
             startActivity(intent);
             return true;
         }
@@ -281,8 +366,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==Utils.PICKFILE_RESULT_CODE){
-            new BackupRestoreHelper.startRestore(this,data.getData()).execute();
+        if (requestCode == Utils.PICKFILE_RESULT_CODE) {
+            new BackupRestoreHelper.startRestore(this, data.getData()).execute();
         }
     }
 }
