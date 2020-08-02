@@ -21,6 +21,9 @@ interface InvestmentStatementDao {
     @Query("SELECT * FROM investment_statement order by investment_date asc")
     List<InvestmentStatement> getAllDateASC();
 
+    @Query("SELECT * FROM investment_statement where investment_date between :dateStr AND :dateEnd order by investment_date desc")
+    List<InvestmentStatement> getAllBetweenStartAndEndDate(long dateStr, long dateEnd);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<InvestmentStatement> investmentStatements);
 

@@ -18,19 +18,22 @@ public class PasswordService {
     private AppDatabase appDatabase;
     public PasswordRecordDao passwordRecordDao;
     private Context context;
-    public PasswordService(Context context){
-        appDatabase=DBService.getAppDatabase();
-        passwordRecordDao=appDatabase.passwordRecordDao();
-        this.context=context;
+
+    public PasswordService(Context context) {
+        appDatabase = DBService.getAppDatabase();
+        passwordRecordDao = appDatabase.passwordRecordDao();
+        this.context = context;
     }
 
-    public void addPasswordRecord(PasswordRecord passwordRecord){
+    public void addPasswordRecord(PasswordRecord passwordRecord) {
         new AddPasswordRecordTask().execute(passwordRecord);
     }
-    public void fetchPassword(RecyclerView recyclerView){
+
+    public void fetchPassword(RecyclerView recyclerView) {
         new FetchPasswordTasks(recyclerView).execute();
     }
-    public List<PasswordRecord> getAllPasswords(){
+
+    public List<PasswordRecord> getAllPasswords() {
         try {
             return new getAllPasswordTasks().execute().get();
         } catch (ExecutionException e) {
@@ -40,17 +43,21 @@ public class PasswordService {
         }
         return null;
     }
-    public void deletePassword(PasswordRecord passwordRecord,RecyclerView recyclerView){
+
+    public void deletePassword(PasswordRecord passwordRecord, RecyclerView recyclerView) {
         new DeletePasswordRecordTask(recyclerView).execute(passwordRecord);
     }
-    public void addAllPasswordRecord(List<PasswordRecord> passwordRecords){
+
+    public void addAllPasswordRecord(List<PasswordRecord> passwordRecords) {
         new AddAllPasswordRecordTask().execute(passwordRecords);
     }
-    private  class DeletePasswordRecordTask extends AsyncTask<PasswordRecord,Void,Void>{
+
+    private class DeletePasswordRecordTask extends AsyncTask<PasswordRecord, Void, Void> {
 
         RecyclerView recyclerView;
-        DeletePasswordRecordTask(RecyclerView recyclerView){
-            this.recyclerView=recyclerView;
+
+        DeletePasswordRecordTask(RecyclerView recyclerView) {
+            this.recyclerView = recyclerView;
         }
 
         @Override
@@ -64,11 +71,14 @@ public class PasswordService {
             fetchPassword(recyclerView);
         }
     }
-    private class FetchPasswordTasks extends AsyncTask<Void,Void,List<PasswordRecord>>{
+
+    private class FetchPasswordTasks extends AsyncTask<Void, Void, List<PasswordRecord>> {
         private RecyclerView recyclerView;
-        FetchPasswordTasks(RecyclerView recyclerView){
-            this.recyclerView=recyclerView;
+
+        FetchPasswordTasks(RecyclerView recyclerView) {
+            this.recyclerView = recyclerView;
         }
+
         @Override
         protected List<PasswordRecord> doInBackground(Void... voids) {
             return passwordRecordDao.getAll();
@@ -77,18 +87,20 @@ public class PasswordService {
         @Override
         protected void onPostExecute(List<PasswordRecord> passwordRecords) {
             super.onPostExecute(passwordRecords);
-            PasswordRecordListAdapter passwordRecordListAdapter=
-                    new PasswordRecordListAdapter(passwordRecords,context);
+            PasswordRecordListAdapter passwordRecordListAdapter =
+                    new PasswordRecordListAdapter(passwordRecords, context);
             recyclerView.setAdapter(passwordRecordListAdapter);
         }
     }
-    private class getAllPasswordTasks extends AsyncTask<Void,Void,List<PasswordRecord>>{
+
+    private class getAllPasswordTasks extends AsyncTask<Void, Void, List<PasswordRecord>> {
         @Override
         protected List<PasswordRecord> doInBackground(Void... voids) {
             return passwordRecordDao.getAll();
         }
     }
-    private class AddPasswordRecordTask extends AsyncTask<PasswordRecord,Void,Void>{
+
+    private class AddPasswordRecordTask extends AsyncTask<PasswordRecord, Void, Void> {
 
         @Override
         protected Void doInBackground(PasswordRecord... passwordRecords) {
@@ -103,7 +115,7 @@ public class PasswordService {
         }
     }
 
-    private class AddAllPasswordRecordTask extends AsyncTask<List<PasswordRecord>,Void,Void>{
+    private class AddAllPasswordRecordTask extends AsyncTask<List<PasswordRecord>, Void, Void> {
 
         @Override
         protected Void doInBackground(List<PasswordRecord>... passwordRecords) {

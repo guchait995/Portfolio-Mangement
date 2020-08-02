@@ -22,28 +22,20 @@ public class InvestmentStatementService {
     private AppDatabase appDatabase;
     public InvestmentStatementDao investmentStatementDao;
     private Context context;
-    public InvestmentStatementService(Context context){
-        appDatabase= DBService.getAppDatabase();
-        investmentStatementDao=appDatabase.investmentStatementDao();
-        this.context=context;
+
+    public InvestmentStatementService(Context context) {
+        appDatabase = DBService.getAppDatabase();
+        investmentStatementDao = appDatabase.investmentStatementDao();
+        this.context = context;
     }
 
-    public void addInvestment(InvestmentStatement investmentStatement){
-       new AddDBTasks(investmentStatementDao).execute(investmentStatement);
+    public void addInvestment(InvestmentStatement investmentStatement) {
+        new AddDBTasks(investmentStatementDao).execute(investmentStatement);
     }
-    public List<InvestmentStatement> getAllInvestmentsDESC(RecyclerView recyclerView, TextView monthlyProfit){
+
+    public List<InvestmentStatement> getInvestmentStatmentsWithinDates(long startDate, long endDate) {
         try {
-            return new FetchDBTasksDESC(investmentStatementDao,recyclerView,monthlyProfit,context).execute().get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-    public List<InvestmentStatement> getAllInvestments(){
-        try {
-            return new FetchDBTasks(investmentStatementDao,context).execute().get();
+            return new FetchDBTasks(investmentStatementDao, context, startDate, endDate).execute().get();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -52,40 +44,63 @@ public class InvestmentStatementService {
         return null;
     }
 
-    public void deleteStatement(InvestmentStatement investmentStatement){
-        new DeleteDBTask(investmentStatementDao,context).execute(investmentStatement);
+    public List<InvestmentStatement> getAllInvestments() {
+        try {
+            return new FetchDBTasks(investmentStatementDao, context, 0, 0).execute().get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public void addAllInvestments(List<InvestmentStatement> investmentStatements){
+    public void deleteStatement(InvestmentStatement investmentStatement) {
+        new DeleteDBTask(investmentStatementDao, context).execute(investmentStatement);
+    }
+
+    public void addAllInvestments(List<InvestmentStatement> investmentStatements) {
         new AddAllDBTasks(investmentStatementDao).execute(investmentStatements);
     }
 
 
-    class FetchDBTasks extends AsyncTask<Void,Void,List<InvestmentStatement> >{
+    class FetchDBTasks extends AsyncTask<Void, Void, List<InvestmentStatement>> {
         private InvestmentStatementDao investmentStatementDao;
-        private RecyclerView recyclerView;
         private Context context;
-        private TextView monthlyProfit;
-        FetchDBTasks(InvestmentStatementDao investmentStatementDao,Context context){
-            this.investmentStatementDao=investmentStatementDao;
-            this.context=context;
+        private long startDate;
+        private long endDate;
+
+        FetchDBTasks(InvestmentStatementDao investmentStatementDao, Context context, long startDate, long endDate) {
+            this.investmentStatementDao = investmentStatementDao;
+            this.context = context;
+            this.startDate = startDate;
+            this.endDate = endDate;
         }
 
         @Override
         protected List<InvestmentStatement> doInBackground(Void... voids) {
-            return investmentStatementDao.getAllDateASC();
+            if (startDate != 0 && endDate != 0) {
+                return investmentStatementDao.getAllBetweenStartAndEndDate(startDate, endDate);
+            } else {
+                return investmentStatementDao.getAllDateASC();
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(List<InvestmentStatement> investmentStatements) {
+            super.onPostExecute(investmentStatements);
+            ((MainActivity) context).refreshData(investmentStatements);
         }
     }
-    class FetchDBTasksDESC extends AsyncTask<Void,Void,List<InvestmentStatement> >{
+
+    class FetchDBTasksDESC extends AsyncTask<Void, Void, List<InvestmentStatement>> {
         private InvestmentStatementDao investmentStatementDao;
-        private RecyclerView recyclerView;
         private Context context;
-        private TextView monthlyProfit;
-        FetchDBTasksDESC(InvestmentStatementDao investmentStatementDao,RecyclerView recyclerView,TextView monthlyProfit,Context context){
-            this.investmentStatementDao=investmentStatementDao;
-            this.recyclerView=recyclerView;
-            this.context=context;
-            this.monthlyProfit=monthlyProfit;
+
+        FetchDBTasksDESC(InvestmentStatementDao investmentStatementDao, Context context) {
+            this.investmentStatementDao = investmentStatementDao;
+            this.context = context;
         }
 
         @Override
@@ -96,20 +111,20 @@ public class InvestmentStatementService {
         @Override
         protected void onPostExecute(List<InvestmentStatement> investmentStatements) {
             super.onPostExecute(investmentStatements);
-            StatementListAdapter sla=new StatementListAdapter(context,investmentStatements);
-            recyclerView.setAdapter(sla);
-            monthlyProfit.setText("Profit: "+String.valueOf(FinanceCalculations.monthlyProfit(investmentStatements)));
+            ((MainActivity) context).refreshData(investmentStatements);
         }
     }
 
-    class DeleteDBTask extends AsyncTask<InvestmentStatement,InvestmentStatement,Void>{
+    class DeleteDBTask extends AsyncTask<InvestmentStatement, InvestmentStatement, Void> {
 
         private InvestmentStatementDao investmentStatementDao;
         private Context context;
-        DeleteDBTask(InvestmentStatementDao investmentStatementDao,Context context){
-            this.investmentStatementDao=investmentStatementDao;
-            this.context=context;
+
+        DeleteDBTask(InvestmentStatementDao investmentStatementDao, Context context) {
+            this.investmentStatementDao = investmentStatementDao;
+            this.context = context;
         }
+
         @Override
         protected Void doInBackground(InvestmentStatement... investmentStatement) {
             investmentStatementDao.delete(investmentStatement[0]);
@@ -121,10 +136,12 @@ public class InvestmentStatementService {
             ((MainActivity) context).refreshInvestments();
         }
     }
-    class AddDBTasks extends AsyncTask<InvestmentStatement,InvestmentStatement,Void>{
+
+    class AddDBTasks extends AsyncTask<InvestmentStatement, InvestmentStatement, Void> {
         private InvestmentStatementDao investmentStatementDao;
-        AddDBTasks(InvestmentStatementDao investmentStatementDao){
-            this.investmentStatementDao=investmentStatementDao;
+
+        AddDBTasks(InvestmentStatementDao investmentStatementDao) {
+            this.investmentStatementDao = investmentStatementDao;
 
         }
 
@@ -133,11 +150,19 @@ public class InvestmentStatementService {
             investmentStatementDao.save(investmentStatement[0]);
             return null;
         }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            ((MainActivity) context).refreshInvestments();
+        }
     }
-    class AddAllDBTasks extends AsyncTask<List<InvestmentStatement>,List<InvestmentStatement>,Void>{
+
+    class AddAllDBTasks extends AsyncTask<List<InvestmentStatement>, List<InvestmentStatement>, Void> {
         private InvestmentStatementDao investmentStatementDao;
-        AddAllDBTasks(InvestmentStatementDao investmentStatementDao){
-            this.investmentStatementDao=investmentStatementDao;
+
+        AddAllDBTasks(InvestmentStatementDao investmentStatementDao) {
+            this.investmentStatementDao = investmentStatementDao;
 
         }
 
@@ -146,8 +171,13 @@ public class InvestmentStatementService {
             investmentStatementDao.insertAll(investmentStatements[0]);
             return null;
         }
-    }
 
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            ((MainActivity) context).refreshInvestments();
+        }
+    }
 
 
 }

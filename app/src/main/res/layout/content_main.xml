@@ -8,107 +8,141 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <ScrollView
+
+    <LinearLayout
+        android:id="@+id/statement_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="100">
 
         <LinearLayout
-            android:id="@+id/statement_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical" >
+            android:layout_height="0dp"
+            android:layout_weight="60"
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tvStatementTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Statement"
-                android:textSize="18dp"
-                android:textStyle="bold"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:padding="10dp"
-                android:background="@color/colorAccentDark"
-                />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="150dp"
-                >
+                android:background="@color/colorAccentDark"
+                android:orientation="horizontal"
+                android:weightSum="12">
+
+                <TextView
+                    android:id="@+id/tvStatementTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    android:background="@color/colorAccentDark"
+                    android:padding="10dp"
+                    android:text="Statement"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/monthSpinner"
+                    style="@style/CustomSpinner"
+                    android:entries="@array/monthItems"
+                    tools:listitem="@layout/each_spinner_item" />
+
+                <Spinner
+                    android:id="@+id/yearSpinner"
+                    style="@style/CustomSpinner"
+                    android:entries="@array/yearItems"
+                    tools:listitem="@layout/each_spinner_item" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:minHeight="150dp">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/statementList"
-                    android:padding="10dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:background="@color/colorAccentLight"
-                    />
+                    android:padding="10dp" />
             </LinearLayout>
+        </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="25"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tvMonthlyTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/colorAccentDark"
+                android:padding="10dp"
                 android:text="Monthly"
-                android:textSize="18dp"
-                android:textStyle="bold"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:padding="10dp"
-                android:background="@color/colorAccentDark"
-                />
+                android:textSize="18dp"
+                android:textStyle="bold" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
                 android:background="@color/colorAccentLight"
-                >
+                android:padding="10dp">
+
                 <TextView
                     android:id="@+id/monthly_profit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="Profit: 0.0"
                     android:textColor="@color/black"
                     android:textSize="18dp"
-                    android:textStyle="bold"
-                    android:text="Profit: 0.0"
-                    />
+                    android:textStyle="bold" />
 
             </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="15"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tvWeeklyTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/colorAccentDark"
+                android:padding="10dp"
                 android:text="Weekly"
-                android:textSize="18dp"
-                android:textStyle="bold"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:padding="10dp"
-                android:background="@color/colorAccentDark"
-                />
+                android:textSize="18dp"
+                android:textStyle="bold" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
                 android:background="@color/colorAccentLight"
-                >
+                android:padding="10dp">
+
                 <TextView
                     android:id="@+id/weekly_profit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="Profit: 0.0"
                     android:textColor="@color/black"
                     android:textSize="18dp"
-                    android:textStyle="bold"
-                    android:text="Profit: 0.0"
-                    />
+                    android:textStyle="bold" />
             </LinearLayout>
-
-
-
         </LinearLayout>
 
-    </ScrollView>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
