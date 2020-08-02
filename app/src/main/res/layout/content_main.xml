@@ -135,7 +135,7 @@
                     android:id="@+id/weekly_profit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Profit: 0.0"
+                    android:text="Profit: None"
                     android:textColor="@color/black"
                     android:textSize="18dp"
                     android:textStyle="bold" />
