@@ -169,8 +169,14 @@ public class MainActivity extends AppCompatActivity {
         monthlyProfit.setText(
                 "Profit: " + String.valueOf(FinanceCalculations.monthlyProfit(investmentStatements)) +
                         "\nInvestment: " + String.valueOf(FinanceCalculations.monthlyInvestment(investmentStatements)) +
-                        "\nNetworth Gain: " + String.valueOf(FinanceCalculations.netWorthGain(investmentStatements))
-        );
+                        "\nNetworth Gain: " + String.valueOf(FinanceCalculations.netWorthGain(investmentStatements)) +
+                        "\nProfit Till Last Month: " + String.valueOf(FinanceCalculations.gainsAtOfStart(investmentStatements))+
+                        "\nInvestment Till Last Month: " + String.valueOf(FinanceCalculations.investmentAsOfStart(investmentStatements)) +
+                        "\nNetworth Gain Till Last Month: " + String.valueOf(FinanceCalculations.networthAsOfStart(investmentStatements))+
+                        "\nProfit Till Date: " + String.valueOf(FinanceCalculations.gainsAsOfLast(investmentStatements)) +
+                        "\nInvestment Till Date: " + String.valueOf(FinanceCalculations.investmentAsOfLast(investmentStatements)) +
+                        "\nNetworth Gain Till Date: " + String.valueOf(FinanceCalculations.networthAsOfLast(investmentStatements))
+       );
     }
 
     public void deleteInvestment(InvestmentStatement investmentStatement) {

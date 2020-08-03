@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -26,6 +27,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
 
 public class StatementListAdapter extends RecyclerView.Adapter<StatementListAdapter.StatementViewHolder> {
     List<InvestmentStatement> investmentStatements;
@@ -86,10 +88,12 @@ public class StatementListAdapter extends RecyclerView.Adapter<StatementListAdap
                     Utils.isConfirmedToDelete(context, investmentStatement);
                 }
             });
-            holder.eachStatementBody.setOnClickListener(new View.OnClickListener() {
+            holder.eachStatementBody.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
-                public void onClick(View v) {
+                public boolean onLongClick(View v) {
+                    holder.eachStatementBody.setBackgroundColor(context.getResources().getColor(R.color.white));
                     ((MainActivity) context).editInvestmentStatement(v, investmentStatement);
+                    return false;
                 }
             });
 
@@ -109,7 +113,6 @@ public class StatementListAdapter extends RecyclerView.Adapter<StatementListAdap
         TextView eachStatementUnrelisedGain;
         ImageView deleteStatementButton;
         LinearLayout eachStatementBody;
-//        TextView eachStatementRelisedGain;
 
         public StatementViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -120,7 +123,6 @@ public class StatementListAdapter extends RecyclerView.Adapter<StatementListAdap
             eachStatementUnrelisedGain = itemView.findViewById(R.id.each_statement_days_unrelised_gain);
             deleteStatementButton = itemView.findViewById(R.id.delete_statement);
             eachStatementBody = itemView.findViewById(R.id.each_statement_body);
-            //            eachStatementRelisedGain=itemView.findViewById(R.id.eachre);
         }
     }
 }

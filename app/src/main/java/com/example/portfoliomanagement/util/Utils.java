@@ -84,18 +84,21 @@ public class Utils {
     public static Date getEndDateOfTheMonth(int year, int month) {
         Calendar calendar = Calendar.getInstance();
         if (year != 0) {
-            calendar.set(year, (month + 1) % 12, 0); //next month
+            calendar.set(Calendar.YEAR,year);
+            calendar.set(Calendar.MONTH,month+1);//next month
+            calendar.set(Calendar.DATE,0); // gives last day of previous month
         }
-        calendar.add(Calendar.DATE, -1); //previos day
         return calendar.getTime();
     }
 
     public static Date getStartDateOfTheMonth(int year, int month) {
         Calendar calendar = Calendar.getInstance();
         if (year != 0) {
-            calendar.set(year, month, 1);
+            calendar.set(Calendar.YEAR,year);
+            calendar.set(Calendar.MONTH,month);
+            calendar.set(Calendar.DAY_OF_MONTH,1);
         }
-        calendar.add(Calendar.DATE, -1);
+        calendar.add(Calendar.DATE,-1);
         return calendar.getTime();
     }
 
