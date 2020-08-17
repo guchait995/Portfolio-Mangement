@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ContactsFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp"
+        >
+
+        <Button
+            android:id="@+id/check_contacts"
+            style="@style/positiveButton"
+            android:text="Clean Up Contacts" />
+
+      <ProgressBar
+          android:id="@+id/progress_circular"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="20dp"
+          />
+
+        <LinearLayout
+            android:id="@+id/updation_details_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="4"
+                >
+
+                <TextView
+                    android:id="@+id/update_contacts_key"
+                    style="@style/titleTextKey"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Contacts To Be Updated"
+                    android:layout_weight="3"
+                    />
+
+                <TextView
+                    android:id="@+id/update_contacts_value"
+                    style="@style/titleTextKey"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="..."
+                    android:layout_weight="1"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="4"
+                >
+
+                <TextView
+                    android:id="@+id/delete_contacts_key"
+                    style="@style/titleTextKey"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Contacts To Be Deleted"
+                    android:layout_weight="3"
+                    />
+
+                <TextView
+                    android:id="@+id/delete_contacts_value"
+                    style="@style/titleTextKey"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="..."
+                    android:layout_weight="1"
+                    />
+            </LinearLayout>
+
+            <TextView
+                style="@style/titleTextKey"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="To be Updated"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcUpdationList"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"/>
+            <TextView
+                style="@style/titleTextKey"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="To be Deleted"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcDeletetionList"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"/>
+            <Button
+                android:id="@+id/btn_process_update"
+                style="@style/positiveButton"
+                android:text="Batch Update"
+                />
+            <Button
+                android:id="@+id/btn_process_delete"
+                style="@style/positiveButton"
+                android:text="Batch Delete"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+    </ScrollView>
+</FrameLayout>

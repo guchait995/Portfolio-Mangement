@@ -3,5 +3,8 @@
     <string name="action_backup">Backup</string>
     <string name="action_restore">Restore</string>
     <string name="action_password">Passwords</string>
+    <string name="action_utils">Utils</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello Contacts fragment</string>
 </resources>

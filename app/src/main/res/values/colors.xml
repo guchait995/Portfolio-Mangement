@@ -6,6 +6,8 @@
     <color name="colorPrimaryLight">#30B3A8</color>
     <color name="colorAccentLight">#FDDAA1</color>
     <color name="colorAccentDark">#9C5F01</color>
+
+    <color name="colorAccentDarkDisabled">#8F797056</color>
     <color name="white">#FFF</color>
     <color name="black">#000</color>
     <color name="red">#FF0000</color>

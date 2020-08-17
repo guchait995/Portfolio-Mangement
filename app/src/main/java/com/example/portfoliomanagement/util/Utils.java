@@ -201,4 +201,8 @@ public class Utils {
         }
         return 0;
     }
+
+    public static boolean isEmailValid(String email){
+        return false;
+    }
 }

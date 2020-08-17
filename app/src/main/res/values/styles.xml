@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -43,7 +43,27 @@
         <item name="android:colorBackground">@color/colorAccentDark</item>
         <item name="android:textColor">@color/white</item>
     </style>
+    <style name="titleTextKey" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/black</item>
+<!--        <item name="android:textFontWeight">20</item>-->
+        <item name="android:textSize">16dp</item>
+    </style>
+    <style name="titleTextValue" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/black</item>
+<!--        <item name="android:textFontWeight"></item>-->
+        <item name="android:textSize">14dp</item>
+    </style>
 
+    <style name="positiveButton" parent="Widget.AppCompat.Button">
+        <item name="android:background">@color/colorAccentDark</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginLeft">30dp</item>
+        <item name="android:layout_marginRight">30dp</item>
+
+    </style>
     <style name="CustomSpinner" parent="Widget.AppCompat.DropDownItem.Spinner">
         <item name="android:textAppearanceListItem">@style/spinnerText</item>
         <item name="android:textColor">@color/white</item>
@@ -52,4 +72,5 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:color">@color/white</item>
     </style>
+
 </resources>

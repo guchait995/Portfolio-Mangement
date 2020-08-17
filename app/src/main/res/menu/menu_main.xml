@@ -17,4 +17,9 @@
         android:orderInCategory="100"
         android:title="@string/action_password"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_utils"
+        android:orderInCategory="100"
+        android:title="@string/action_utils"
+        app:showAsAction="never" />
 </menu>

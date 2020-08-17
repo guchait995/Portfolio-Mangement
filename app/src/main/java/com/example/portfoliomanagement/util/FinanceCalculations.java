@@ -17,6 +17,20 @@ public class FinanceCalculations {
         else
             return 0;
     }
+    public static double monthlyProfitFromTodaysGains(List<InvestmentStatement> investmentStatements){
+        /**
+         * add all todays gains of the month
+         * **/
+        if(!investmentStatements.isEmpty()) {
+            double totalGains = 0;
+            for (InvestmentStatement is : investmentStatements) {
+                totalGains+=is.getTodaysGain();
+            }
+            return totalGains;
+        }
+        else
+            return 0;
+    }
     public static double netWorthGain(List<InvestmentStatement> investmentStatements){
         /**last_statement_networth - (first_statement_networth - first_days_gain - first_days_investment)
            @Networth  of day includes that days investment as
@@ -31,6 +45,21 @@ public class FinanceCalculations {
         @investment_till_first_date : includes that days investment**/
         if(!investmentStatements.isEmpty())
         return  investmentAsOfLast(investmentStatements) - investmentAsOfStart(investmentStatements);
+        else
+            return 0;
+
+    }
+    public static double monthlyInvestmentFromTodaysInvestment(List<InvestmentStatement> investmentStatements) {
+        /**
+         * add all todays investment
+         * **/
+        if(!investmentStatements.isEmpty()){
+            double todaysInvestment=0;
+            for(InvestmentStatement is:investmentStatements){
+                todaysInvestment+=is.getTodayInvestment();
+            }
+            return todaysInvestment;
+        }
         else
             return 0;
 
